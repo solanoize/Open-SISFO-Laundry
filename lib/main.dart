@@ -1,5 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:open_sisfo_laundry/screens/home/home_screen.dart';
+import 'package:open_sisfo_laundry/screens/barang_screens/daftar_barang_screen.dart';
+
+final Drawer drawer = Drawer(
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      const DrawerHeader(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+        ),
+        child: Text('Drawer Header'),
+      ),
+      ListTile(
+        title: const Text('Item 1'),
+        onTap: () {
+          // Update the state of the app.
+          // ...
+        },
+      )
+    ],
+  ),
+);
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +35,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Open SISFO Laundry',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: DaftarBarangScreen(),
     );
   }
 }

@@ -6,6 +6,30 @@ import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/models/Barang.dart';
 import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
 
+Drawer drawer(BuildContext context) => Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            child: Text(
+              "Laundry",
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+          ),
+          ListTile(
+            title: const Text('Daftar Barang'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          )
+        ],
+      ),
+    );
+
 enum ActionItem {
   actionUpdate,
   actionDelete,
@@ -21,6 +45,7 @@ class DaftarBarangScreen extends StatefulWidget {
 class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
   Future<List<Barang>>? futureDaftarBarang;
   ActionItem? selectedAction;
+  String title = "Barang";
 
   @override
   void initState() {
@@ -31,7 +56,23 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        centerTitle: true,
+        title: Text(title),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: Icon(Icons.menu),
+            );
+          },
+        ),
+      ),
       body: futureBuilder(),
+      drawer: drawer(context),
     );
   }
 

@@ -22,24 +22,27 @@ class BarangRepository {
   }
 
   static Future<List<Barang>> reads() async {
-    Database db = await DatabaseHelper.initDB();
-    String sql = 'SELECT * FROM $table ORDER BY $fieldBarangId DESC LIMIT 10;';
-    List<Map<String, Object?>> map = await db.rawQuery(sql);
+    return Future<List<Barang>>.delayed(const Duration(seconds: 3), () async {
+      Database db = await DatabaseHelper.initDB();
+      String sql =
+          'SELECT * FROM $table ORDER BY $fieldBarangId DESC LIMIT 10;';
+      List<Map<String, Object?>> map = await db.rawQuery(sql);
 
-    // db.close();
+      // db.close();
 
-    return [
-      for (final {
-            'barangId': barangId as int,
-            'nama': nama as String,
-            'deskripsi': deskripsi as String
-          } in map)
-        Barang(
-          barangId: barangId,
-          nama: nama,
-          deskripsi: deskripsi,
-        )
-    ];
+      return [
+        for (final {
+              'barangId': barangId as int,
+              'nama': nama as String,
+              'deskripsi': deskripsi as String
+            } in map)
+          Barang(
+            barangId: barangId,
+            nama: nama,
+            deskripsi: deskripsi,
+          )
+      ];
+    });
   }
 
   static Future<Barang> create({
