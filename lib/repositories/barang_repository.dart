@@ -1,5 +1,5 @@
 import 'package:open_sisfo_laundry/helpers/database.dart';
-import 'package:open_sisfo_laundry/models/Barang.dart';
+import 'package:open_sisfo_laundry/models/barang_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BarangRepository {
@@ -8,21 +8,24 @@ class BarangRepository {
   static const fieldNama = "nama";
   static const fieldDeskripsi = "deskripsi";
 
-  static Future<Barang> read({required int barangId}) async {
-    Database db = await DatabaseHelper.initDB();
-    String sql = 'SELECT * FROM $table WHERE $fieldBarangId=?';
-    List<Map<String, Object?>> map = await db.rawQuery(sql, [barangId]);
+  static Future<BarangModel> read({required int barangId}) async {
+    return Future<BarangModel>.delayed(const Duration(seconds: 3), () async {
+      Database db = await DatabaseHelper.initDB();
+      String sql = 'SELECT * FROM $table WHERE $fieldBarangId=?';
+      List<Map<String, Object?>> map = await db.rawQuery(sql, [barangId]);
 
-    if (map.isEmpty) {
-      throw Exception("Barang tidak ditemukan");
-    }
+      if (map.isEmpty) {
+        throw Exception("Barang tidak ditemukan");
+      }
 
-    db.close();
-    return Barang.fromMap(map.first);
+      db.close();
+      return BarangModel.fromMap(map.first);
+    });
   }
 
-  static Future<List<Barang>> reads() async {
-    return Future<List<Barang>>.delayed(const Duration(seconds: 3), () async {
+  static Future<List<BarangModel>> reads() async {
+    return Future<List<BarangModel>>.delayed(const Duration(seconds: 3),
+        () async {
       Database db = await DatabaseHelper.initDB();
       String sql =
           'SELECT * FROM $table ORDER BY $fieldBarangId DESC LIMIT 10;';
@@ -36,7 +39,7 @@ class BarangRepository {
               'nama': nama as String,
               'deskripsi': deskripsi as String
             } in map)
-          Barang(
+          BarangModel(
             barangId: barangId,
             nama: nama,
             deskripsi: deskripsi,
@@ -45,11 +48,11 @@ class BarangRepository {
     });
   }
 
-  static Future<Barang> create({
+  static Future<BarangModel> create({
     required String nama,
     required String deskripsi,
   }) async {
-    return Future<Barang>.delayed(const Duration(seconds: 3), () async {
+    return Future<BarangModel>.delayed(const Duration(seconds: 3), () async {
       // throw Exception("Barang tidak dapat disimpan");  // For test
       Database db = await DatabaseHelper.initDB();
       String sql = '''INSERT INTO 
@@ -62,14 +65,36 @@ class BarangRepository {
         throw Exception("Barang tidak dapat disimpan");
       }
 
-      Barang barang = await read(barangId: barangId);
+      BarangModel barang = await read(barangId: barangId);
 
       db.close();
       return barang;
     });
   }
 
-  static Future<List<Barang>> filterByNama({required String nama}) async {
+  static Future<BarangModel> update({
+    required int barangId,
+    required String nama,
+    required String deskripsi,
+  }) async {
+    return Future<BarangModel>.delayed(const Duration(seconds: 3), () async {
+      Database db = await DatabaseHelper.initDB();
+      String sql = 'UPDATE Barang SET nama = ?, deskripsi = ? WHERE barangId=?';
+
+      int result = await db.rawUpdate(sql, [nama, deskripsi, barangId]);
+
+      if (result == 0) {
+        throw Exception("Barang tidak dapat diupdate");
+      }
+
+      BarangModel barang = await read(barangId: barangId);
+
+      db.close();
+      return barang;
+    });
+  }
+
+  static Future<List<BarangModel>> filterByNama({required String nama}) async {
     Database db = await DatabaseHelper.initDB();
     String sql =
         'SELECT * FROM $table WHERE nama LIKE ? ORDER BY $fieldBarangId DESC LIMIT 10;';
@@ -83,7 +108,7 @@ class BarangRepository {
             'nama': nama as String,
             'deskripsi': deskripsi as String
           } in map)
-        Barang(
+        BarangModel(
           barangId: barangId,
           nama: nama,
           deskripsi: deskripsi,

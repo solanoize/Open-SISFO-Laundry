@@ -3,9 +3,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/helpers/widgets.dart';
-import 'package:open_sisfo_laundry/models/Barang.dart';
+import 'package:open_sisfo_laundry/models/barang_model.dart';
 import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/create_barang_screen.dart';
+import 'package:open_sisfo_laundry/screens/barang_screens/update_barang_screen.dart';
 
 Drawer drawer(BuildContext context, GlobalKey<ScaffoldState> key) => Drawer(
       child: ListView(
@@ -146,7 +147,7 @@ class DaftarBarangScreen extends StatefulWidget {
 
 class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Future<List<Barang>>? futureDaftarBarang;
+  Future<List<BarangModel>>? futureDaftarBarang;
   ActionItem? selectedAction;
   String title = "Barang";
 
@@ -180,17 +181,18 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
     );
   }
 
-  FutureBuilder<List<Barang>> futureBuilder() {
-    return FutureBuilder<List<Barang>>(
+  FutureBuilder<List<BarangModel>> futureBuilder() {
+    return FutureBuilder<List<BarangModel>>(
       future: futureDaftarBarang,
-      builder: (BuildContext context, AsyncSnapshot<List<Barang>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<BarangModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
             log("[DaftarBarangScreen] ${snapshot.error.toString()}");
             return problemWidget(context: context);
           }
 
-          List<Barang> daftarBarang = snapshot.data!;
+          List<BarangModel> daftarBarang = snapshot.data!;
           if (daftarBarang.isEmpty) {
             return emptyWidget();
           }
@@ -203,7 +205,7 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
     );
   }
 
-  SafeArea layout(List<Barang> daftarBarang) {
+  SafeArea layout(List<BarangModel> daftarBarang) {
     return SafeArea(
       child: Column(
         children: [
@@ -213,7 +215,7 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
                 return ListTile(
                   title: Text(daftarBarang[index].nama),
                   subtitle: Text(daftarBarang[index].deskripsi),
-                  trailing: popupMenu(),
+                  trailing: popupMenu(barangId: daftarBarang[index].barangId),
                 );
               },
               separatorBuilder: (context, index) => Divider(),
@@ -225,14 +227,21 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
     );
   }
 
-  PopupMenuButton<ActionItem> popupMenu() {
+  PopupMenuButton<ActionItem> popupMenu({required int barangId}) {
     return PopupMenuButton<ActionItem>(
       initialValue: selectedAction,
       onSelected: (ActionItem item) {
         if (item == ActionItem.actionDelete) {
           log("Delete screen");
         } else {
-          log("Edit screen");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return UpdateBarangScreen(barangId: barangId);
+              },
+            ),
+          );
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
