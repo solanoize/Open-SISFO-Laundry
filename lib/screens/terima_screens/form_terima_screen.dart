@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/repositories/terima_repository.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/form_customer_screen.dart';
 import 'package:provider/provider.dart';
 
 class FormTerimaScreen extends StatefulWidget {
@@ -165,22 +167,26 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
     // check jika valid
     if (_formKey.currentState!.validate()) {
-      terimaProvider.nomorTerima(nomorTerimaController.text);
-      terimaProvider.tanggal(selectedDate);
-      terimaProvider.berat(int.parse(beratController.text));
-
       /// Check nomor terima
-      // TerimaRepository.isUniqueNomorTerima(
-      //   nomorTerima: nomorTerimaController.text,
-      // ).then((bool result) {
-      //   terimaProvider.nomorTerima(nomorTerimaController.text);
-      //   terimaProvider.tanggal(selectedDate);
-      //   terimaProvider.berat(int.parse(beratController.text));
-      // }).catchError((error) {
-      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //     content: Text('Nomor terima sudah tersedia. ${error.toString()}'),
-      //   ));
-      // });
+      TerimaRepository.isUniqueNomorTerima(
+        nomorTerima: nomorTerimaController.text,
+      ).then((bool result) {
+        terimaProvider.nomorTerima(nomorTerimaController.text);
+        terimaProvider.tanggal(selectedDate);
+        terimaProvider.berat(int.parse(beratController.text));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return FormCustomerScreen();
+            },
+          ),
+        );
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Nomor terima sudah tersedia. ${error.toString()}'),
+        ));
+      });
     }
   }
 
