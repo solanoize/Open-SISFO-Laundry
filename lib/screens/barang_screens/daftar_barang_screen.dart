@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/models/Barang.dart';
 import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
+import 'package:open_sisfo_laundry/screens/barang_screens/create_barang_screen.dart';
 
-Drawer drawer(BuildContext context) => Drawer(
+Drawer drawer(BuildContext context, GlobalKey<ScaffoldState> key) => Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -14,18 +15,119 @@ Drawer drawer(BuildContext context) => Drawer(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Laundry",
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                Text(
+                  "Open Sistem Informasi Laundry 1.0.0",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 24,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Laundry",
-              style: Theme.of(context).textTheme.headlineLarge,
+              "Master",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
             ),
           ),
           ListTile(
             title: const Text('Daftar Barang'),
+            leading: Icon(Icons.inventory_2_outlined),
             onTap: () {
               // Update the state of the app.
               // ...
             },
-          )
+          ),
+          ListTile(
+            title: const Text('Barang Baru'),
+            leading: Icon(Icons.add),
+            onTap: () {
+              key.currentState?.closeDrawer();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CreateBarangScreen();
+                  },
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Transaksi",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('Terima Cucian'),
+            leading: Icon(Icons.shopping_bag_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Cucian Selesai'),
+            leading: Icon(Icons.dry_cleaning_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Ambil Cucian'),
+            leading: Icon(Icons.people_alt_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Lainnya",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('Laporan Periodik'),
+            leading: Icon(Icons.receipt_long_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Pengaturan'),
+            leading: Icon(Icons.settings_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
         ],
       ),
     );
@@ -43,6 +145,7 @@ class DaftarBarangScreen extends StatefulWidget {
 }
 
 class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Future<List<Barang>>? futureDaftarBarang;
   ActionItem? selectedAction;
   String title = "Barang";
@@ -56,6 +159,7 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
@@ -72,7 +176,7 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
         ),
       ),
       body: futureBuilder(),
-      drawer: drawer(context),
+      drawer: drawer(context, _scaffoldKey),
     );
   }
 

@@ -49,21 +49,24 @@ class BarangRepository {
     required String nama,
     required String deskripsi,
   }) async {
-    Database db = await DatabaseHelper.initDB();
-    String sql = '''INSERT INTO 
-      Barang ($fieldNama, $fieldDeskripsi) 
-      VALUES(?, ?);
-    ''';
-    int barangId = await db.rawInsert(sql, [nama, deskripsi]);
+    return Future<Barang>.delayed(const Duration(seconds: 3), () async {
+      // throw Exception("Barang tidak dapat disimpan");  // For test
+      Database db = await DatabaseHelper.initDB();
+      String sql = '''INSERT INTO 
+        Barang ($fieldNama, $fieldDeskripsi) 
+        VALUES(?, ?);
+      ''';
+      int barangId = await db.rawInsert(sql, [nama, deskripsi]);
 
-    if (barangId == 0) {
-      throw Exception("Barang tidak dapat disimpan");
-    }
+      if (barangId == 0) {
+        throw Exception("Barang tidak dapat disimpan");
+      }
 
-    Barang barang = await read(barangId: barangId);
+      Barang barang = await read(barangId: barangId);
 
-    db.close();
-    return barang;
+      db.close();
+      return barang;
+    });
   }
 
   static Future<List<Barang>> filterByNama({required String nama}) async {
