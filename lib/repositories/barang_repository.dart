@@ -3,13 +3,15 @@ import 'package:open_sisfo_laundry/models/barang_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BarangRepository {
+  static const timeDuration = 1;
   static const table = "Barang";
   static const fieldBarangId = "barangId";
   static const fieldNama = "nama";
   static const fieldDeskripsi = "deskripsi";
 
   static Future<BarangModel> read({required int barangId}) async {
-    return Future<BarangModel>.delayed(const Duration(seconds: 3), () async {
+    return Future<BarangModel>.delayed(const Duration(seconds: timeDuration),
+        () async {
       Database db = await DatabaseHelper.initDB();
       String sql = 'SELECT * FROM $table WHERE $fieldBarangId=?';
       List<Map<String, Object?>> map = await db.rawQuery(sql, [barangId]);
@@ -24,14 +26,14 @@ class BarangRepository {
   }
 
   static Future<List<BarangModel>> reads() async {
-    return Future<List<BarangModel>>.delayed(const Duration(seconds: 3),
-        () async {
+    return Future<List<BarangModel>>.delayed(
+        const Duration(seconds: timeDuration), () async {
       Database db = await DatabaseHelper.initDB();
       String sql =
           'SELECT * FROM $table ORDER BY $fieldBarangId DESC LIMIT 10;';
       List<Map<String, Object?>> map = await db.rawQuery(sql);
 
-      // db.close();
+      db.close();
 
       return [
         for (final {
@@ -52,11 +54,12 @@ class BarangRepository {
     required String nama,
     required String deskripsi,
   }) async {
-    return Future<BarangModel>.delayed(const Duration(seconds: 3), () async {
+    return Future<BarangModel>.delayed(const Duration(seconds: timeDuration),
+        () async {
       // throw Exception("Barang tidak dapat disimpan");  // For test
       Database db = await DatabaseHelper.initDB();
       String sql = '''INSERT INTO 
-        Barang ($fieldNama, $fieldDeskripsi) 
+        $table ($fieldNama, $fieldDeskripsi) 
         VALUES(?, ?);
       ''';
       int barangId = await db.rawInsert(sql, [nama, deskripsi]);
@@ -77,9 +80,11 @@ class BarangRepository {
     required String nama,
     required String deskripsi,
   }) async {
-    return Future<BarangModel>.delayed(const Duration(seconds: 3), () async {
+    return Future<BarangModel>.delayed(const Duration(seconds: timeDuration),
+        () async {
       Database db = await DatabaseHelper.initDB();
-      String sql = 'UPDATE Barang SET nama = ?, deskripsi = ? WHERE barangId=?';
+      String sql =
+          'UPDATE $table SET $fieldNama = ?, $fieldDeskripsi = ? WHERE $fieldBarangId=?';
 
       int result = await db.rawUpdate(sql, [nama, deskripsi, barangId]);
 
@@ -95,9 +100,10 @@ class BarangRepository {
   }
 
   static Future<bool> delete({required int barangId}) async {
-    return Future<bool>.delayed(const Duration(seconds: 3), () async {
+    return Future<bool>.delayed(const Duration(seconds: timeDuration),
+        () async {
       Database db = await DatabaseHelper.initDB();
-      String sql = 'DELETE FROM Barang WHERE barangId = ?';
+      String sql = 'DELETE FROM $table WHERE $fieldBarangId = ?';
       int result = await db.rawDelete(sql, [barangId]);
 
       if (result == 0) {

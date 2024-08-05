@@ -61,6 +61,10 @@ class _ConfirmDeleteBarangScreenState extends State<ConfirmDeleteBarangScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Visibility(
+            visible: isProcess,
+            child: LinearProgressIndicator(),
+          ),
           SizedBox(height: 32),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
