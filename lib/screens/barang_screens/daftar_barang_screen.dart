@@ -160,25 +160,32 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        centerTitle: true,
-        title: Text(title),
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: Icon(Icons.menu),
-            );
-          },
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {
+          futureDaftarBarang = BarangRepository.reads();
+        });
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          centerTitle: true,
+          title: Text(title),
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                icon: Icon(Icons.menu),
+              );
+            },
+          ),
         ),
+        body: futureBuilder(),
+        drawer: drawer(context, _scaffoldKey),
       ),
-      body: futureBuilder(),
-      drawer: drawer(context, _scaffoldKey),
     );
   }
 
@@ -231,9 +238,9 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
   PopupMenuButton<ActionItem> popupMenu({required int barangId}) {
     return PopupMenuButton<ActionItem>(
       initialValue: selectedAction,
-      onSelected: (ActionItem item) {
+      onSelected: (ActionItem item) async {
         if (item == ActionItem.actionDelete) {
-          Navigator.push(
+          bool result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
@@ -241,8 +248,16 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
               },
             ),
           );
+
+          if (!context.mounted) return;
+
+          if (result) {
+            setState(() {
+              futureDaftarBarang = BarangRepository.reads();
+            });
+          }
         } else {
-          Navigator.push(
+          bool result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
@@ -250,6 +265,14 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
               },
             ),
           );
+
+          if (!context.mounted) return;
+
+          if (result) {
+            setState(() {
+              futureDaftarBarang = BarangRepository.reads();
+            });
+          }
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
