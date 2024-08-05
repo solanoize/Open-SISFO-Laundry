@@ -1,4 +1,4 @@
-class Terima {
+class TerimaModel {
   int terimaId;
   String nomorTerima;
   DateTime tanggal;
@@ -21,7 +21,7 @@ class Terima {
   static const String lunas = 'Lunas';
   static const String downPayment = 'Down Payment';
 
-  Terima({
+  TerimaModel({
     required this.terimaId,
     required this.nomorTerima,
     required this.tanggal,
@@ -38,8 +38,8 @@ class Terima {
     required this.statusPembayaran,
   });
 
-  factory Terima.fromMap(Map<String, Object?> map) {
-    return Terima(
+  factory TerimaModel.fromMap(Map<String, Object?> map) {
+    return TerimaModel(
       terimaId: map['terimaId'] as int,
       nomorTerima: map['nomorTerima'] as String,
       tanggal: map['tanggal'] as DateTime,

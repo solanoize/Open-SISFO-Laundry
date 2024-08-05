@@ -8,6 +8,7 @@ import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/confirm_delete_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/create_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/update_barang_screen.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/pilih_item_screens.dart';
 
 enum ActionItem {
   actionUpdate,
@@ -245,8 +246,14 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
             title: const Text('Terima Cucian'),
             leading: Icon(Icons.shopping_bag_outlined),
             onTap: () {
-              // Update the state of the app.
-              // ...
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return PilihItemScreens();
+                  },
+                ),
+              );
             },
           ),
           ListTile(

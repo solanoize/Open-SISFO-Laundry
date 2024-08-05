@@ -1,29 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:open_sisfo_laundry/providers/item_provider.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/daftar_barang_screen.dart';
-
-final Drawer drawer = Drawer(
-  child: ListView(
-    padding: EdgeInsets.zero,
-    children: [
-      const DrawerHeader(
-        decoration: BoxDecoration(
-          color: Colors.blue,
-        ),
-        child: Text('Drawer Header'),
-      ),
-      ListTile(
-        title: const Text('Item 1'),
-        onTap: () {
-          // Update the state of the app.
-          // ...
-        },
-      )
-    ],
-  ),
-);
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (context) => ItemProvider())],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

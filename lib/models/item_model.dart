@@ -1,11 +1,11 @@
-class Item {
+class ItemModel {
   int itemId;
   int barangId;
   int terimaId;
   String nama;
   int jumlah;
 
-  Item({
+  ItemModel({
     required this.itemId,
     required this.barangId,
     required this.terimaId,
@@ -13,8 +13,8 @@ class Item {
     required this.jumlah,
   });
 
-  factory Item.fromMap(Map<String, Object?> map) {
-    return Item(
+  factory ItemModel.fromMap(Map<String, Object?> map) {
+    return ItemModel(
       itemId: map['itemId'] as int,
       barangId: map['barangId'] as int,
       terimaId: map['terimaId'] as int,
