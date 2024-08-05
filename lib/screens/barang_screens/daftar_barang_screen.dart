@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/models/barang_model.dart';
 import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
+import 'package:open_sisfo_laundry/screens/barang_screens/confirm_delete_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/create_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/update_barang_screen.dart';
 
@@ -232,7 +233,14 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
       initialValue: selectedAction,
       onSelected: (ActionItem item) {
         if (item == ActionItem.actionDelete) {
-          log("Delete screen");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return ConfirmDeleteBarangScreen(barangId: barangId);
+              },
+            ),
+          );
         } else {
           Navigator.push(
             context,

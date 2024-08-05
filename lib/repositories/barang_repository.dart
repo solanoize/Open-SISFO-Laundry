@@ -94,6 +94,21 @@ class BarangRepository {
     });
   }
 
+  static Future<bool> delete({required int barangId}) async {
+    return Future<bool>.delayed(const Duration(seconds: 3), () async {
+      Database db = await DatabaseHelper.initDB();
+      String sql = 'DELETE FROM Barang WHERE barangId = ?';
+      int result = await db.rawDelete(sql, [barangId]);
+
+      if (result == 0) {
+        throw Exception("Barang tidak dapat dihapus");
+      }
+
+      db.close();
+      return true;
+    });
+  }
+
   static Future<List<BarangModel>> filterByNama({required String nama}) async {
     Database db = await DatabaseHelper.initDB();
     String sql =
