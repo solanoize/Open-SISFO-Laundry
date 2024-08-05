@@ -8,7 +8,7 @@ import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/confirm_delete_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/create_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/update_barang_screen.dart';
-import 'package:open_sisfo_laundry/screens/terima_screens/pilih_item_screens.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/pilih_item_screen.dart';
 
 enum ActionItem {
   actionUpdate,
@@ -72,7 +72,6 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
           (BuildContext context, AsyncSnapshot<List<BarangModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            log("[DaftarBarangScreen] ${snapshot.error.toString()}");
             return problemWidget(context: context);
           }
 

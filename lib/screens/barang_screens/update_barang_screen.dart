@@ -46,11 +46,10 @@ class _UpdateBarangScreenState extends State<UpdateBarangScreen> {
       builder: (BuildContext context, AsyncSnapshot<BarangModel> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            log("[UpdateBarangScreen] ${snapshot.error.toString()}");
             return problemWidget(context: context);
           }
           BarangModel barang = snapshot.data!;
-          log("KEPANGGIL... ${barang.nama}");
+
           if (namaController.text.isEmpty && deskripsiController.text.isEmpty) {
             namaController.text = barang.nama;
             deskripsiController.text = barang.deskripsi;

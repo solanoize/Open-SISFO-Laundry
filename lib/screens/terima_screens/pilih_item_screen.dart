@@ -3,6 +3,7 @@ import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/models/barang_model.dart';
 import 'package:open_sisfo_laundry/providers/item_provider.dart';
 import 'package:open_sisfo_laundry/repositories/barang_repository.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/form_terima_screen.dart';
 import 'package:provider/provider.dart';
 
 class PilihItemScreens extends StatefulWidget {
@@ -89,6 +90,8 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
     List<BarangModel> daftarBarang,
     int index,
   ) {
+    /// TODO: need improvement with Provider listen false.
+    /// var itemProvider2 = Provider.of<ItemProvider>(context, listen: false);
     return ListTile(
       onTap: () {
         itemProvider.add(daftarBarang[index], -1);
@@ -144,9 +147,25 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
       child: Row(
         children: [
           Expanded(
-            child: FilledButton(
-              onPressed: () {},
-              child: Text("Lanjutkan"),
+            child: Consumer<ItemProvider>(
+              builder: (_, value, __) {
+                bool isValid = value.isValidCart;
+                return FilledButton(
+                  onPressed: isValid
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return FormTerimaScreen();
+                              },
+                            ),
+                          );
+                        }
+                      : null,
+                  child: Text("Lanjutkan"),
+                );
+              },
             ),
           ),
         ],

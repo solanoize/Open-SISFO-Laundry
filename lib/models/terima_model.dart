@@ -18,8 +18,10 @@ class TerimaModel {
   static const String selesai = 'Selesai';
   static const String diambil = 'Diambil';
 
-  static const String lunas = 'Lunas';
+  static const String paid = 'Paid';
   static const String downPayment = 'Down Payment';
+  static const String unpaid = 'Unpaid';
+  static const String inPayment = 'In Payment';
 
   TerimaModel({
     required this.terimaId,
