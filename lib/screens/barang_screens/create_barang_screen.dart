@@ -43,8 +43,9 @@ class CreateBarangScreenState extends State<CreateBarangScreen> {
                     Expanded(
                       flex: 1,
                       child: ElevatedButton(
-                        onPressed:
-                            isProcess ? null : () => Navigator.pop(context),
+                        onPressed: isProcess
+                            ? null
+                            : () => Navigator.pop(context, false),
                         child: Text("Batal"),
                       ),
                     ),
@@ -133,7 +134,7 @@ class CreateBarangScreenState extends State<CreateBarangScreen> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Berhasil menyimpan data'),
         ));
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           showCloseIcon: true,

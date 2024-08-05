@@ -103,7 +103,8 @@ class _ConfirmDeleteBarangScreenState extends State<ConfirmDeleteBarangScreen> {
                 Expanded(
                   flex: 2,
                   child: FilledButton(
-                    onPressed: isProcess ? null : () => Navigator.pop(context),
+                    onPressed:
+                        isProcess ? null : () => Navigator.pop(context, false),
                     child: Text("Tidak Yakin"),
                   ),
                 ),
@@ -123,7 +124,7 @@ class _ConfirmDeleteBarangScreenState extends State<ConfirmDeleteBarangScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Berhasil menghapus data'),
       ));
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         showCloseIcon: true,

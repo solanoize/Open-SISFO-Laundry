@@ -9,131 +9,6 @@ import 'package:open_sisfo_laundry/screens/barang_screens/confirm_delete_barang_
 import 'package:open_sisfo_laundry/screens/barang_screens/create_barang_screen.dart';
 import 'package:open_sisfo_laundry/screens/barang_screens/update_barang_screen.dart';
 
-Drawer drawer(BuildContext context, GlobalKey<ScaffoldState> key) => Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Laundry",
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                Text(
-                  "Open Sistem Informasi Laundry 1.0.0",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Master",
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-            ),
-          ),
-          ListTile(
-            title: const Text('Daftar Barang'),
-            leading: Icon(Icons.inventory_2_outlined),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          ListTile(
-            title: const Text('Barang Baru'),
-            leading: Icon(Icons.add),
-            onTap: () {
-              key.currentState?.closeDrawer();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CreateBarangScreen();
-                  },
-                ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Transaksi",
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-            ),
-          ),
-          ListTile(
-            title: const Text('Terima Cucian'),
-            leading: Icon(Icons.shopping_bag_outlined),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          ListTile(
-            title: const Text('Cucian Selesai'),
-            leading: Icon(Icons.dry_cleaning_outlined),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          ListTile(
-            title: const Text('Ambil Cucian'),
-            leading: Icon(Icons.people_alt_outlined),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Lainnya",
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-            ),
-          ),
-          ListTile(
-            title: const Text('Laporan Periodik'),
-            leading: Icon(Icons.receipt_long_outlined),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          ListTile(
-            title: const Text('Pengaturan'),
-            leading: Icon(Icons.settings_outlined),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-        ],
-      ),
-    );
-
 enum ActionItem {
   actionUpdate,
   actionDelete,
@@ -184,7 +59,7 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
           ),
         ),
         body: futureBuilder(),
-        drawer: drawer(context, _scaffoldKey),
+        drawer: drawer(),
       ),
     );
   }
@@ -285,6 +160,141 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
           child: Text("Delete"),
         ),
       ],
+    );
+  }
+
+  Drawer drawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Laundry",
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                Text(
+                  "Open Sistem Informasi Laundry 1.0.0",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 24,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Master",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('Daftar Barang'),
+            leading: Icon(Icons.inventory_2_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Barang Baru'),
+            leading: Icon(Icons.add),
+            onTap: () async {
+              _scaffoldKey.currentState?.closeDrawer();
+              bool result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CreateBarangScreen();
+                  },
+                ),
+              );
+
+              if (!context.mounted) return;
+
+              if (result) {
+                setState(() {
+                  futureDaftarBarang = BarangRepository.reads();
+                });
+              }
+            },
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Transaksi",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('Terima Cucian'),
+            leading: Icon(Icons.shopping_bag_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Cucian Selesai'),
+            leading: Icon(Icons.dry_cleaning_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Ambil Cucian'),
+            leading: Icon(Icons.people_alt_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Lainnya",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('Laporan Periodik'),
+            leading: Icon(Icons.receipt_long_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('Pengaturan'),
+            leading: Icon(Icons.settings_outlined),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+        ],
+      ),
     );
   }
 }
