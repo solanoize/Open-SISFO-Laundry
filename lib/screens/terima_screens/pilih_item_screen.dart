@@ -32,7 +32,6 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
       },
       child: Scaffold(
         appBar: AppBar(
-          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           centerTitle: true,
           title: const Text("Pilih Item"),
           actions: [
@@ -87,14 +86,13 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
   }
 
   SafeArea layout(List<BarangModel> daftarBarang) {
-    var itemProvider = context.watch<ItemProvider>();
     return SafeArea(
       child: Column(
         children: [
           Expanded(
             child: ListView.separated(
               itemBuilder: (context, index) {
-                return detail(itemProvider, daftarBarang, index);
+                return detail(daftarBarang, index);
               },
               separatorBuilder: (context, index) => Divider(),
               itemCount: daftarBarang.length,
@@ -106,19 +104,16 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
   }
 
   ListTile detail(
-    ItemProvider itemProvider,
     List<BarangModel> daftarBarang,
     int index,
   ) {
-    /// TODO: need improvement with Provider listen false.
-    /// var itemProvider2 = Provider.of<ItemProvider>(context, listen: false);
+    var itemProvider = Provider.of<ItemProvider>(context, listen: false);
     return ListTile(
       onTap: () {
         itemProvider.add(daftarBarang[index], -1);
       },
       title: Text(daftarBarang[index].nama),
       subtitle: Text(daftarBarang[index].deskripsi),
-      selected: itemProvider.selected(daftarBarang[index].barangId),
       trailing: FittedBox(
         fit: BoxFit.fill,
         child: Row(

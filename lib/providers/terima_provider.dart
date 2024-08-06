@@ -54,4 +54,20 @@ class TerimaProvider extends ChangeNotifier {
     _terima.total = _terima.berat * _terima.hargaPerKg;
     notifyListeners();
   }
+
+  void dibayar(int dibayar) {
+    _terima.dibayar = dibayar;
+    if (dibayar >= _terima.total) {
+      /// Saat pembayaran lunas
+      _terima.kembali = dibayar - _terima.total;
+      _terima.sisa = 0;
+      _terima.statusPembayaran = TerimaModel.paid;
+    } else if (dibayar < _terima.total) {
+      /// Saat pembayaran dp
+      _terima.sisa = _terima.total - dibayar;
+      _terima.kembali = 0;
+      _terima.statusPembayaran = TerimaModel.downPayment;
+    }
+    notifyListeners();
+  }
 }

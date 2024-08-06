@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/models/barang_model.dart';
@@ -169,9 +167,6 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/models/barang_model.dart';
