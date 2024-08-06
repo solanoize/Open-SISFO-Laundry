@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/providers/item_provider.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/form_bayar_screen.dart';
 import 'package:provider/provider.dart';
 
 class RingkasanTerimaScreen extends StatefulWidget {
@@ -21,7 +22,16 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
         centerTitle: true,
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return FormBayarScreen();
+                  },
+                ),
+              );
+            },
             child: Text("Pembayaran"),
           )
         ],
@@ -30,6 +40,7 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
         child: Column(
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: item(
@@ -55,6 +66,7 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
             ),
             Divider(),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: item(
