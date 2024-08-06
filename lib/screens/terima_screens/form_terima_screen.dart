@@ -24,7 +24,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Detail Terima"),
         centerTitle: true,
       ),
@@ -178,7 +178,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return FormCustomerScreen();
+              return FormPelangganScreen();
             },
           ),
         );

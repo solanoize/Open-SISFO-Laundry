@@ -28,7 +28,7 @@ class _ConfirmDeleteBarangScreenState extends State<ConfirmDeleteBarangScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
         title: Text(title),
       ),

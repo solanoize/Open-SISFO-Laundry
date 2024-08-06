@@ -45,7 +45,7 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           centerTitle: true,
           title: Text(title),
           leading: Builder(

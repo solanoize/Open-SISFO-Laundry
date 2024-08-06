@@ -18,7 +18,7 @@ class CreateBarangScreenState extends State<CreateBarangScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Buat Barang"),
         centerTitle: true,
       ),

@@ -21,6 +21,8 @@ class TerimaProvider extends ChangeNotifier {
 
   get terima => _terima.nomorTerima;
 
+  get tta => _terima.alamatPelanggan;
+
   void nomorTerima(String nomorTerima) {
     _terima.nomorTerima = nomorTerima;
     notifyListeners();
@@ -34,5 +36,17 @@ class TerimaProvider extends ChangeNotifier {
   void berat(int berat) {
     _terima.berat = berat;
     notifyListeners();
+  }
+
+  void namaPelanggan(String namaPelanggan) {
+    _terima.namaPelanggan = namaPelanggan;
+  }
+
+  void teleponPelanggan(String teleponPelanggan) {
+    _terima.teleponPelanggan = teleponPelanggan;
+  }
+
+  void alamatPelanggan(String alamatPelanggan) {
+    _terima.alamatPelanggan = alamatPelanggan;
   }
 }
