@@ -31,7 +31,7 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Isi Pelanggan"),
+        title: const Text("Pelanggan"),
         centerTitle: true,
         actions: [
           TextButton(
