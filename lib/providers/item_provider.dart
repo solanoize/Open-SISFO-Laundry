@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/models/barang_model.dart';
 import 'package:open_sisfo_laundry/models/item_model.dart';
@@ -44,4 +46,8 @@ class ItemProvider extends ChangeNotifier {
   bool _isDuplicate(int barangId) {
     return _items.any((ItemModel value) => value.barangId == barangId);
   }
+
+  int get length => _items.length;
+
+  UnmodifiableListView<ItemModel> get items => UnmodifiableListView(_items);
 }

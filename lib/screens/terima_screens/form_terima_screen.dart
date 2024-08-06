@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:open_sisfo_laundry/helpers/misc.dart';
+import 'package:open_sisfo_laundry/models/harga_model.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/repositories/harga_repository.dart';
 import 'package:open_sisfo_laundry/repositories/terima_repository.dart';
 import 'package:open_sisfo_laundry/screens/terima_screens/form_customer_screen.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +24,18 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
   TextEditingController beratController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   bool isProcess = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('id_ID');
+    var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
+    tanggalController.text =
+        DateFormat("d MMMM y", 'id').format(terimaProvider.terima.tanggal);
+    nomorTerimaController.text = terimaProvider.terima.nomorTerima;
+    beratController.text =
+        beratController.text = terimaProvider.terima.berat.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +99,20 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: TextFormField(
         maxLength: 5,
+        readOnly: true,
         controller: nomorTerimaController,
         decoration: InputDecoration(
-          labelText: "Nomor Terima",
-          helperText: "* Wajib diisi",
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-        ),
+            labelText: "Nomor Terima",
+            helperText: "* Wajib diisi",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                TerimaRepository.generateNomorterima().then((String nomor) {
+                  nomorTerimaController.text = nomor;
+                });
+              },
+            )),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';
@@ -120,10 +145,6 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
             return 'Please enter some text';
           }
 
-          if (value.length > 10) {
-            return 'Panjang karakter maksimal 5 karakter';
-          }
-
           return null;
         },
       ),
@@ -134,7 +155,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: TextFormField(
-        maxLength: 5,
+        maxLength: 2,
         keyboardType: TextInputType.number,
         controller: beratController,
         decoration: InputDecoration(
@@ -174,14 +195,17 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
         terimaProvider.nomorTerima(nomorTerimaController.text);
         terimaProvider.tanggal(selectedDate);
         terimaProvider.berat(int.parse(beratController.text));
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return FormPelangganScreen();
-            },
-          ),
-        );
+        HargaRepository.read().then((HargaModel harga) {
+          terimaProvider.hargaPerKg(harga.hargaPerKg);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return FormPelangganScreen();
+              },
+            ),
+          );
+        });
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Nomor terima sudah tersedia. ${error.toString()}'),
@@ -199,12 +223,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        var year = picked.year.toString().padLeft(2, '0');
-        var month = picked.month.toString().padLeft(2, '0');
-        var day = picked.day.toString().padLeft(2, '0');
-        var dateString = "$year-$month-$day";
-
-        tanggalController.text = dateString;
+        tanggalController.text = DateFormat("d MMMM y", 'id').format(picked);
       });
     }
   }

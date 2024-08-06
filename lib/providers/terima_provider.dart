@@ -19,9 +19,7 @@ class TerimaProvider extends ChangeNotifier {
     statusPembayaran: TerimaModel.inPayment,
   );
 
-  get terima => _terima.nomorTerima;
-
-  get tta => _terima.alamatPelanggan;
+  TerimaModel get terima => _terima;
 
   void nomorTerima(String nomorTerima) {
     _terima.nomorTerima = nomorTerima;
@@ -35,6 +33,7 @@ class TerimaProvider extends ChangeNotifier {
 
   void berat(int berat) {
     _terima.berat = berat;
+    _terima.total = berat * _terima.hargaPerKg;
     notifyListeners();
   }
 
@@ -48,5 +47,11 @@ class TerimaProvider extends ChangeNotifier {
 
   void alamatPelanggan(String alamatPelanggan) {
     _terima.alamatPelanggan = alamatPelanggan;
+  }
+
+  void hargaPerKg(int hargaPerKg) {
+    _terima.hargaPerKg = hargaPerKg;
+    _terima.total = _terima.berat * _terima.hargaPerKg;
+    notifyListeners();
   }
 }

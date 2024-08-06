@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/ringkasan_terima_screen.dart';
 import 'package:provider/provider.dart';
 
 class FormPelangganScreen extends StatefulWidget {
@@ -18,13 +19,14 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
   TextEditingController alamatPelangganController = TextEditingController();
 
   @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    namaPelangganController.dispose();
-    teleponPelangganController.dispose();
-    alamatPelangganController.dispose();
-    super.dispose();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
+    namaPelangganController.text = terimaProvider.terima.namaPelanggan;
+    teleponPelangganController.text = terimaProvider.terima.teleponPelanggan;
+    alamatPelangganController.text = terimaProvider.terima.alamatPelanggan;
   }
 
   @override
@@ -42,10 +44,16 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
                 provider.namaPelanggan(namaPelangganController.text);
                 provider.teleponPelanggan(teleponPelangganController.text);
                 provider.alamatPelanggan(alamatPelangganController.text);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return RingkasanTerimaScreen();
+                  }),
+                );
               }
             },
             child: Text(
-              "Selanjutnya",
+              "Berikutnya",
             ),
           )
         ],

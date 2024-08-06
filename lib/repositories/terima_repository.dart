@@ -1,5 +1,4 @@
 import 'package:open_sisfo_laundry/helpers/database.dart';
-import 'package:open_sisfo_laundry/models/terima_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TerimaRepository {
@@ -20,7 +19,7 @@ class TerimaRepository {
   static const fieldSisa = 'sisa';
   static const fieldStatusPembayaran = 'statusPembayaran';
 
-  static Future<bool> isUniqueNomorTerima({required String nomorTerima}) {
+  static Future<bool> isUniqueNomorTerima({required String nomorTerima}) async {
     return Future<bool>.delayed(const Duration(seconds: timeDuration),
         () async {
       Database db = await DatabaseHelper.initDB();
@@ -31,6 +30,16 @@ class TerimaRepository {
       }
 
       return true;
+    });
+  }
+
+  static Future<String> generateNomorterima() async {
+    return Future<String>.delayed(const Duration(seconds: timeDuration),
+        () async {
+      Database db = await DatabaseHelper.initDB();
+      String sql = 'SELECT COUNT(*) + 1 as count FROM $table;';
+      List<Map<String, Object?>> map = await db.rawQuery(sql);
+      return "TR${map.first['count'].toString().padLeft(3, "0")}";
     });
   }
 }
