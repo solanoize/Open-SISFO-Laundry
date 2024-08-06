@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:open_sisfo_laundry/helpers/misc.dart';
 import 'package:open_sisfo_laundry/models/harga_model.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
 import 'package:open_sisfo_laundry/repositories/harga_repository.dart';
@@ -41,11 +40,12 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Detail Terima"),
         centerTitle: true,
+        actions: [
+          TextButton(onPressed: onSimpan, child: Text("Berikutnya")),
+        ],
       ),
-      bottomNavigationBar: tombol(),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -55,11 +55,8 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
                 visible: isProcess,
                 child: LinearProgressIndicator(),
               ),
-              SizedBox(height: 32),
               nomorTerima(),
-              SizedBox(height: 24),
               tanggal(),
-              SizedBox(height: 24),
               berat(),
             ],
           ),
@@ -68,117 +65,84 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     );
   }
 
-  Padding tombol() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: isProcess ? null : () => Navigator.pop(context, false),
-              child: Text("Batal"),
-            ),
-          ),
-          SizedBox(width: 24),
-          Expanded(
-            flex: 2,
-            child: FilledButton(
-              onPressed: isProcess ? null : onSimpan,
-              style: ButtonStyle(),
-              child: Text("Lanjutkan"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Padding nomorTerima() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: TextFormField(
-        maxLength: 5,
-        readOnly: true,
-        controller: nomorTerimaController,
-        decoration: InputDecoration(
-            labelText: "Nomor Terima",
-            helperText: "* Wajib diisi",
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            suffixIcon: IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                TerimaRepository.generateNomorterima().then((String nomor) {
-                  nomorTerimaController.text = nomor;
-                });
-              },
-            )),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter some text';
-          }
-
-          if (value.length > 5) {
-            return 'Panjang karakter maksimal 5 karakter';
-          }
-
-          return null;
-        },
-      ),
-    );
-  }
-
-  Padding tanggal() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: TextFormField(
-        readOnly: true,
-        controller: tanggalController,
-        onTap: () => onSelectedDate(context),
-        decoration: InputDecoration(
-          labelText: "Tanggal Terima",
-          helperText: "* Wajib diisi",
-          floatingLabelBehavior: FloatingLabelBehavior.always,
+  Widget nomorTerima() {
+    return TextFormField(
+      maxLength: 5,
+      readOnly: true,
+      controller: nomorTerimaController,
+      decoration: InputDecoration(
+        labelText: "Nomor Terima",
+        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        alignLabelWithHint: true,
+        suffixIcon: IconButton(
+          icon: Icon(Icons.refresh),
+          onPressed: () {
+            TerimaRepository.generateNomorterima().then((String nomor) {
+              nomorTerimaController.text = nomor;
+            });
+          },
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter some text';
-          }
-
-          return null;
-        },
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+
+        if (value.length > 5) {
+          return 'Panjang karakter maksimal 5 karakter';
+        }
+
+        return null;
+      },
     );
   }
 
-  Padding berat() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: TextFormField(
-        maxLength: 2,
-        keyboardType: TextInputType.number,
-        controller: beratController,
-        decoration: InputDecoration(
-          labelText: "Berat Cucian (kg)",
-          helperText: "* Wajib diisi",
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-        ),
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-          FilteringTextInputFormatter.digitsOnly,
-        ],
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter some text';
-          }
-
-          if (value.length > 5) {
-            return 'Panjang karakter maksimal 5 karakter';
-          }
-
-          return null;
-        },
+  Widget tanggal() {
+    return TextFormField(
+      readOnly: true,
+      maxLength: 16,
+      controller: tanggalController,
+      onTap: () => onSelectedDate(context),
+      decoration: InputDecoration(
+        labelText: "Tanggal Terima",
+        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        alignLabelWithHint: true,
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  Widget berat() {
+    return TextFormField(
+      maxLength: 2,
+      keyboardType: TextInputType.number,
+      controller: beratController,
+      decoration: InputDecoration(
+        labelText: "Berat Cucian (kg)",
+        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        alignLabelWithHint: true,
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+
+        if (value.length > 5) {
+          return 'Panjang karakter maksimal 5 karakter';
+        }
+
+        return null;
+      },
     );
   }
 

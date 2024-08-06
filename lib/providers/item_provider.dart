@@ -47,6 +47,10 @@ class ItemProvider extends ChangeNotifier {
     return _items.any((ItemModel value) => value.barangId == barangId);
   }
 
+  bool selected(int barangId) {
+    return _items.any((ItemModel value) => value.barangId == barangId);
+  }
+
   int get length => _items.length;
 
   UnmodifiableListView<ItemModel> get items => UnmodifiableListView(_items);

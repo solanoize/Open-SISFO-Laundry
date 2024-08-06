@@ -15,7 +15,6 @@ class PilihItemScreens extends StatefulWidget {
 
 class _PilihItemScreensState extends State<PilihItemScreens> {
   Future<List<BarangModel>>? futureDaftarBarang;
-  String title = "Pilih Item";
 
   @override
   void initState() {
@@ -35,7 +34,29 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
         appBar: AppBar(
           // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           centerTitle: true,
-          title: Text(title),
+          title: const Text("Pilih Item"),
+          actions: [
+            Consumer<ItemProvider>(
+              builder: (_, value, __) {
+                bool isValid = value.isValidCart;
+                return TextButton(
+                  onPressed: isValid
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return FormTerimaScreen();
+                              },
+                            ),
+                          );
+                        }
+                      : null,
+                  child: Text("Berikutnya"),
+                );
+              },
+            )
+          ],
         ),
         body: futureBuilder(),
       ),
@@ -79,7 +100,6 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
               itemCount: daftarBarang.length,
             ),
           ),
-          lanjutkan(),
         ],
       ),
     );
@@ -98,6 +118,7 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
       },
       title: Text(daftarBarang[index].nama),
       subtitle: Text(daftarBarang[index].deskripsi),
+      selected: itemProvider.selected(daftarBarang[index].barangId),
       trailing: FittedBox(
         fit: BoxFit.fill,
         child: Row(
@@ -109,18 +130,13 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
                 }
                 itemProvider.add(daftarBarang[index], -1);
               },
-              icon: Icon(
-                Icons.remove_circle_outline,
-                size: 24,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
+              icon: Icon(Icons.remove_circle_outline),
             ),
             Consumer<ItemProvider>(
               builder: (context, value, child) {
                 int jumlah = value.getTotal(daftarBarang[index].barangId);
                 return Text(
                   jumlah.toString(),
-                  style: TextStyle(fontSize: 16),
                 );
               },
             ),
@@ -128,47 +144,10 @@ class _PilihItemScreensState extends State<PilihItemScreens> {
               onPressed: () {
                 itemProvider.add(daftarBarang[index], 1);
               },
-              icon: Icon(
-                Icons.add_circle,
-                size: 24,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              icon: Icon(Icons.add_circle),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Container lanjutkan() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      margin: EdgeInsets.symmetric(vertical: 24),
-      child: Row(
-        children: [
-          Expanded(
-            child: Consumer<ItemProvider>(
-              builder: (_, value, __) {
-                bool isValid = value.isValidCart;
-                return FilledButton(
-                  onPressed: isValid
-                      ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return FormTerimaScreen();
-                              },
-                            ),
-                          );
-                        }
-                      : null,
-                  child: Text("Lanjutkan"),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }
