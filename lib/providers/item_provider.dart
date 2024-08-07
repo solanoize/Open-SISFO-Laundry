@@ -54,4 +54,9 @@ class ItemProvider extends ChangeNotifier {
   int get length => _items.length;
 
   UnmodifiableListView<ItemModel> get items => UnmodifiableListView(_items);
+
+  void clear() {
+    _items.clear();
+    notifyListeners();
+  }
 }

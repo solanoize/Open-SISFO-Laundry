@@ -17,70 +17,96 @@ class FormTerimaScreen extends StatefulWidget {
 }
 
 class _FormTerimaScreenState extends State<FormTerimaScreen> {
+  /// MISC PROPERTIES
   final _formKey = GlobalKey<FormState>();
-  TextEditingController nomorTerimaController = TextEditingController();
-  TextEditingController tanggalController = TextEditingController();
-  TextEditingController beratController = TextEditingController();
-  DateTime selectedDate = DateTime.now();
-  bool isProcess = false;
+  DateTime _selectedDate = DateTime.now();
+  bool _isProcess = false;
+
+  /// CONTROLLER PROPERTIES
+  TextEditingController _nomorTerimaController = TextEditingController();
+  TextEditingController _tanggalController = TextEditingController();
+  TextEditingController _beratController = TextEditingController();
+
+  /// FUTURE PROPERTIES
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('id_ID');
-    var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
-    tanggalController.text =
-        DateFormat("d MMMM y", 'id').format(terimaProvider.terima.tanggal);
-    nomorTerimaController.text = terimaProvider.terima.nomorTerima;
-    beratController.text =
-        beratController.text = terimaProvider.terima.berat.toString();
+    initController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Detail Terima"),
-        centerTitle: true,
-        actions: [
-          TextButton(onPressed: onSimpan, child: Text("Berikutnya")),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Visibility(
-                visible: isProcess,
-                child: LinearProgressIndicator(),
-              ),
-              nomorTerima(),
-              tanggal(),
-              berat(),
-            ],
-          ),
+      appBar: header(),
+      body: layout(),
+    );
+  }
+
+  /// INITS
+  void initController() {
+    var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
+    _tanggalController.text =
+        DateFormat("d MMMM y", 'id').format(terimaProvider.terima.tanggal);
+    _nomorTerimaController.text = terimaProvider.terima.nomorTerima;
+    _beratController.text =
+        _beratController.text = terimaProvider.terima.berat.toString();
+  }
+
+  /// HEADER
+  AppBar header() {
+    return AppBar(
+      title: Text("Detail Terima"),
+      centerTitle: true,
+      actions: [
+        TextButton(
+          onPressed: _isProcess ? null : eventSimpan,
+          child: Text("Berikutnya"),
+        ),
+      ],
+    );
+  }
+
+  /// FUTURE
+
+  /// LAYOUT
+  Widget layout() {
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Visibility(
+              visible: _isProcess,
+              child: LinearProgressIndicator(),
+            ),
+            inputNomorTerima(),
+            inputTanggal(),
+            inputBerat(),
+          ],
         ),
       ),
     );
   }
 
-  Widget nomorTerima() {
+  /// COLLECTION
+
+  /// DETAIL
+
+  /// INPUTS
+  Widget inputNomorTerima() {
     return TextFormField(
       maxLength: 5,
       readOnly: true,
-      controller: nomorTerimaController,
+      controller: _nomorTerimaController,
       decoration: InputDecoration(
         labelText: "Nomor Terima",
         contentPadding: EdgeInsets.symmetric(horizontal: 16),
         alignLabelWithHint: true,
         suffixIcon: IconButton(
           icon: Icon(Icons.refresh),
-          onPressed: () {
-            TerimaRepository.generateNomorterima().then((String nomor) {
-              nomorTerimaController.text = nomor;
-            });
-          },
+          onPressed: eventGenerateNumber,
         ),
       ),
       validator: (value) {
@@ -97,12 +123,12 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     );
   }
 
-  Widget tanggal() {
+  Widget inputTanggal() {
     return TextFormField(
       readOnly: true,
       maxLength: 16,
-      controller: tanggalController,
-      onTap: () => onSelectedDate(context),
+      controller: _tanggalController,
+      onTap: () => eventSelectedDate(context),
       decoration: InputDecoration(
         labelText: "Tanggal Terima",
         contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -118,11 +144,11 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     );
   }
 
-  Widget berat() {
+  Widget inputBerat() {
     return TextFormField(
       maxLength: 2,
       keyboardType: TextInputType.number,
-      controller: beratController,
+      controller: _beratController,
       decoration: InputDecoration(
         labelText: "Berat Cucian (kg)",
         contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -146,29 +172,33 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     );
   }
 
-  void onSimpan() {
-    /// Menggunakan provider listen false direkomendasikan, karena
-    /// tidak dapat diguinakan di dalam build
+  /// EVENTS
+  void eventSimpan() {
     var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
-    // check jika valid
+
     if (_formKey.currentState!.validate()) {
-      /// Check nomor terima
+      setState(() {
+        _isProcess = true;
+      });
+
       TerimaRepository.isUniqueNomorTerima(
-        nomorTerima: nomorTerimaController.text,
+        nomorTerima: _nomorTerimaController.text,
       ).then((bool result) {
-        terimaProvider.nomorTerima(nomorTerimaController.text);
-        terimaProvider.tanggal(selectedDate);
-        terimaProvider.berat(int.parse(beratController.text));
+        terimaProvider.nomorTerima(_nomorTerimaController.text);
+        terimaProvider.tanggal(_selectedDate);
+        terimaProvider.berat(int.parse(_beratController.text));
+
         HargaRepository.read().then((HargaModel harga) {
           terimaProvider.hargaPerKg(harga.hargaPerKg);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return FormPelangganScreen();
-              },
-            ),
-          );
+          linkToFormPelangganScreen();
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Terjadi kesalahan saat mengambil harga'),
+          ));
+        }).whenComplete(() {
+          setState(() {
+            _isProcess = false;
+          });
         });
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -178,17 +208,46 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
     }
   }
 
-  Future<void> onSelectedDate(BuildContext context) async {
+  void eventGenerateNumber() {
+    setState(() {
+      _isProcess = true;
+    });
+    TerimaRepository.generateNomorterima().then((String nomor) {
+      _nomorTerimaController.text = nomor;
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Kesalahan saat menghasilkan nomor terima.'),
+      ));
+    }).whenComplete(() {
+      setState(() {
+        _isProcess = false;
+      });
+    });
+  }
+
+  Future<void> eventSelectedDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: _selectedDate,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
+    if (picked != null && picked != _selectedDate) {
       setState(() {
-        selectedDate = picked;
-        tanggalController.text = DateFormat("d MMMM y", 'id').format(picked);
+        _selectedDate = picked;
+        _tanggalController.text = DateFormat("d MMMM y", 'id').format(picked);
       });
     }
+  }
+
+  /// LINKS
+  void linkToFormPelangganScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return FormPelangganScreen();
+        },
+      ),
+    );
   }
 }

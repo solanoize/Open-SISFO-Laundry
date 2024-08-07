@@ -70,4 +70,22 @@ class TerimaProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void clear() {
+    _terima.terimaId = 0;
+    _terima.nomorTerima = "";
+    _terima.tanggal = DateTime.now();
+    _terima.status = TerimaModel.dicuci;
+    _terima.namaPelanggan = "";
+    _terima.teleponPelanggan = "";
+    _terima.alamatPelanggan = "";
+    _terima.berat = 1;
+    _terima.hargaPerKg = 0;
+    _terima.total = 0;
+    _terima.dibayar = 0;
+    _terima.kembali = 0;
+    _terima.sisa = 0;
+    _terima.statusPembayaran = TerimaModel.inPayment;
+    notifyListeners();
+  }
 }

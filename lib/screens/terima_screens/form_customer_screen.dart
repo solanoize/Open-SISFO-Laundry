@@ -13,71 +13,94 @@ class FormPelangganScreen extends StatefulWidget {
 }
 
 class _FormPelangganScreenState extends State<FormPelangganScreen> {
+  /// MISC PROPERTIES
   final _formKey = GlobalKey<FormState>();
-  TextEditingController namaPelangganController = TextEditingController();
-  TextEditingController teleponPelangganController = TextEditingController();
-  TextEditingController alamatPelangganController = TextEditingController();
+
+  /// CONTROLLER PROPERTIES
+  TextEditingController _namaPelangganController = TextEditingController();
+  TextEditingController _teleponPelangganController = TextEditingController();
+  TextEditingController _alamatPelangganController = TextEditingController();
+
+  /// FUTURE PROPERTIES
+  /// not implemented here.
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-    var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
-    namaPelangganController.text = terimaProvider.terima.namaPelanggan;
-    teleponPelangganController.text = terimaProvider.terima.teleponPelanggan;
-    alamatPelangganController.text = terimaProvider.terima.alamatPelanggan;
+    initController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pelanggan"),
-        centerTitle: true,
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                var provider =
-                    Provider.of<TerimaProvider>(context, listen: false);
-                provider.namaPelanggan(namaPelangganController.text);
-                provider.teleponPelanggan(teleponPelangganController.text);
-                provider.alamatPelanggan(alamatPelangganController.text);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return RingkasanTerimaScreen();
-                  }),
-                );
-              }
-            },
-            child: Text(
-              "Berikutnya",
-            ),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // SizedBox(height: 32),
-              namaPelanggan(),
-              teleponPelanggan(),
-              alamatPelanggan(),
-            ],
-          ),
+      appBar: header(),
+      body: layout(),
+    );
+  }
+
+  /// INITS
+  void initController() {
+    var terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
+    _namaPelangganController.text = terimaProvider.terima.namaPelanggan;
+    _teleponPelangganController.text = terimaProvider.terima.teleponPelanggan;
+    _alamatPelangganController.text = terimaProvider.terima.alamatPelanggan;
+  }
+
+  /// HEADER
+  AppBar header() {
+    return AppBar(
+      title: const Text("Pelanggan"),
+      centerTitle: true,
+      actions: [
+        actionHeaderBerikutnya(),
+      ],
+    );
+  }
+
+  /// LEADING HEADER
+  /// not implemented
+
+  /// ACTIONS HEADER
+  Widget actionHeaderBerikutnya() {
+    return TextButton(
+      onPressed: eventBerikutnya,
+      child: Text("Berikutnya"),
+    );
+  }
+
+  /// BOTTOM ACTION
+  /// not implemented
+
+  /// FUTURE
+  /// not implemented
+
+  /// LAYOUT
+  Widget layout() {
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            inputNamaPelanggan(),
+            inputTeleponPelanggan(),
+            inputAlamatPelanggan(),
+          ],
         ),
       ),
     );
   }
 
-  TextFormField namaPelanggan() {
+  /// COLLECTION
+  /// not implemented
+
+  /// DETAIL
+  /// not implemented
+
+  /// INPUTS
+  TextFormField inputNamaPelanggan() {
     return TextFormField(
       maxLength: 20,
-      controller: namaPelangganController,
+      controller: _namaPelangganController,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: "Nama ",
@@ -98,11 +121,11 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
     );
   }
 
-  TextFormField teleponPelanggan() {
+  TextFormField inputTeleponPelanggan() {
     return TextFormField(
       maxLength: 13,
       textInputAction: TextInputAction.next,
-      controller: teleponPelangganController,
+      controller: _teleponPelangganController,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         labelText: "Telepon",
@@ -126,12 +149,12 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
     );
   }
 
-  TextFormField alamatPelanggan() {
+  TextFormField inputAlamatPelanggan() {
     return TextFormField(
       maxLength: 100,
       maxLines: 5,
       textInputAction: TextInputAction.done,
-      controller: alamatPelangganController,
+      controller: _alamatPelangganController,
       decoration: InputDecoration(
         labelText: "Alamat",
         contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -148,6 +171,27 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
 
         return null;
       },
+    );
+  }
+
+  /// EVENTS
+  void eventBerikutnya() {
+    if (_formKey.currentState!.validate()) {
+      var provider = Provider.of<TerimaProvider>(context, listen: false);
+      provider.namaPelanggan(_namaPelangganController.text);
+      provider.teleponPelanggan(_teleponPelangganController.text);
+      provider.alamatPelanggan(_alamatPelangganController.text);
+      linkToRingkasanTerimaScreen();
+    }
+  }
+
+  /// LINKS
+  void linkToRingkasanTerimaScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return RingkasanTerimaScreen();
+      }),
     );
   }
 }

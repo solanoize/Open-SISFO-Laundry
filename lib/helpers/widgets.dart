@@ -34,3 +34,23 @@ Widget problemWidget({required BuildContext context}) {
     ),
   );
 }
+
+Widget problemWidgetException(
+    {required BuildContext context, required String message}) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.mood_bad_outlined,
+          color: Theme.of(context).colorScheme.error,
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(message)
+      ],
+    ),
+  );
+}

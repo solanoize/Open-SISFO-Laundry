@@ -240,13 +240,9 @@ class _DaftarBarangScreenState extends State<DaftarBarangScreen> {
             title: const Text('Terima Cucian'),
             leading: Icon(Icons.shopping_bag_outlined),
             onTap: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return PilihItemScreens();
-                  },
-                ),
+                MaterialPageRoute(builder: (context) => PilihItemScreens()),
               );
             },
           ),

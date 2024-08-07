@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/screens/terima_screens/process_terima_screen.dart';
 import 'package:provider/provider.dart';
 
 class FormBayarScreen extends StatefulWidget {
@@ -14,155 +12,205 @@ class FormBayarScreen extends StatefulWidget {
 }
 
 class _FormBayarScreenState extends State<FormBayarScreen> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController dibayarController = TextEditingController();
+  /// MISC PROPERTIES
+  /// not implemented
+
+  /// CONTROLLER PROPERTIES
+  TextEditingController _dibayarController = TextEditingController();
+
+  /// FUTURE PROPERTIES
+  /// not implemented
+
+  @override
+  void initState() {
+    super.initState();
+    initController();
+    initListener();
+  }
 
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
-    dibayarController.dispose();
+    _dibayarController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    final terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
-    dibayarController.text = terimaProvider.terima.total.toString();
-    // Start listening to changes.
-    dibayarController.addListener(_onDibayar);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Pembayaran"),
-        centerTitle: true,
-        actions: [
-          TextButton(onPressed: () {}, child: Text("Selesai")),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text("Nomor Terima"),
-                      subtitle: Consumer<TerimaProvider>(
-                        builder: (context, value, child) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(value.terima.nomorTerima),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text("Total"),
-                      subtitle: Consumer<TerimaProvider>(
-                        builder: (context, value, child) {
-                          return Text("Rp. ${value.terima.total}");
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text("Harga Per Kg"),
-                      subtitle: Consumer<TerimaProvider>(
-                        builder: (context, value, child) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Rp. ${value.terima.hargaPerKg}/kg"),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text("Berat Cucian"),
-                      subtitle: Consumer<TerimaProvider>(
-                        builder: (context, value, child) {
-                          return Text("${value.terima.berat} kg");
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text("Sisa"),
-                      subtitle: Consumer<TerimaProvider>(
-                        builder: (context, value, child) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Rp. ${value.terima.sisa}"),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text("Kembalian"),
-                      subtitle: Consumer<TerimaProvider>(
-                        builder: (context, value, child) {
-                          return Text("Rp. ${value.terima.total}");
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              dibayar(),
-              ListTile(
-                title: Text("Jenis Pembayaran "),
-                subtitle: Consumer<TerimaProvider>(
-                  builder: (context, value, child) {
-                    return Text(value.terima.statusPembayaran);
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 32,
-              ),
-            ],
-          ),
+      appBar: header(),
+      body: layout(),
+    );
+  }
+
+  /// INITS
+  void initController() {
+    final terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
+    _dibayarController.text = terimaProvider.terima.total.toString();
+  }
+
+  void initListener() {
+    // Start listening to changes.
+    _dibayarController.addListener(eventDibayar);
+  }
+
+  /// HEADER
+  AppBar header() {
+    return AppBar(
+      title: Text("Pembayaran"),
+      centerTitle: true,
+      actions: [
+        actionsHeaderSelesai(),
+      ],
+    );
+  }
+
+  /// FUTURE
+  /// not implemented
+
+  /// LAYOUT
+  Widget layout() {
+    return SingleChildScrollView(
+      child: Form(
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: widgetNomorTerima()),
+                Expanded(child: widgetTotal()),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: widgetHargaPerKg()),
+                Expanded(child: widgetBeratCucian()),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: widgetSisa()),
+                Expanded(child: widgetKembalian()),
+              ],
+            ),
+            inputDibayar(),
+            widgetJenisPembayaran(),
+            SizedBox(height: 32),
+          ],
         ),
       ),
     );
   }
 
-  Widget dibayar() {
+  /// COLLECTION
+  /// not implemented
+
+  /// DETAIL
+  /// not implemented
+
+  /// WIDGETS
+  /// not implemented
+  Widget widgetNomorTerima() {
+    return ListTile(
+      title: Text("Nomor Terima"),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(value.terima.nomorTerima),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget widgetTotal() {
+    return ListTile(
+      title: Text("Total"),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Text("Rp. ${value.terima.total}");
+        },
+      ),
+    );
+  }
+
+  Widget widgetHargaPerKg() {
+    return ListTile(
+      title: Text("Harga Per Kg"),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Rp. ${value.terima.hargaPerKg}/kg"),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget widgetBeratCucian() {
+    return ListTile(
+      title: Text("Berat Cucian"),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Text("${value.terima.berat} kg");
+        },
+      ),
+    );
+  }
+
+  Widget widgetSisa() {
+    return ListTile(
+      title: Text("Sisa"),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Rp. ${value.terima.sisa}"),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget widgetKembalian() {
+    return ListTile(
+      title: Text("Kembalian"),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Text("Rp. ${value.terima.total}");
+        },
+      ),
+    );
+  }
+
+  Widget widgetJenisPembayaran() {
+    return ListTile(
+      title: Text("Jenis Pembayaran "),
+      subtitle: Consumer<TerimaProvider>(
+        builder: (context, value, child) {
+          return Text(value.terima.statusPembayaran);
+        },
+      ),
+    );
+  }
+
+  /// INPUTS
+  Widget inputDibayar() {
     return TextFormField(
       maxLength: 12,
       keyboardType: TextInputType.number,
-      controller: dibayarController,
+      controller: _dibayarController,
       decoration: InputDecoration(
         labelText: "Dibayar",
         contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -186,13 +234,45 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
     );
   }
 
-  void _onDibayar() {
+  ///////// OPTIONAL AREA //////////
+
+  /// LEADING HEADER
+  /// not implemented
+
+  /// ACTIONS HEADER
+  Widget actionsHeaderSelesai() {
+    return TextButton(
+      onPressed: eventSelesai,
+      child: Text("Selesai"),
+    );
+  }
+
+  /// BOTTOM ACTION
+  /// not implemented
+
+  /// EVENTS
+  void eventSelesai() {
+    linkToProcessTerimaScreen();
+  }
+
+  void eventDibayar() {
     final terimaProvider = Provider.of<TerimaProvider>(context, listen: false);
-    final String text = dibayarController.text;
+    final String text = _dibayarController.text;
     if (text.isEmpty) {
       terimaProvider.dibayar(0);
     } else {
       terimaProvider.dibayar(int.parse(text));
     }
+  }
+
+  /// LINKS
+  void linkToProcessTerimaScreen() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProcessTerimaScreen(),
+      ),
+      (Route<dynamic> route) => false, // Remove all routes beneath
+    );
   }
 }

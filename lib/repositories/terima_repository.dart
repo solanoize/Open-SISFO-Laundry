@@ -1,4 +1,9 @@
 import 'package:open_sisfo_laundry/helpers/database.dart';
+import 'package:open_sisfo_laundry/models/item_model.dart';
+import 'package:open_sisfo_laundry/models/terima_model.dart';
+import 'package:open_sisfo_laundry/providers/item_provider.dart';
+import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/repositories/item_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TerimaRepository {
@@ -40,6 +45,46 @@ class TerimaRepository {
       String sql = 'SELECT COUNT(*) + 1 as count FROM $table;';
       List<Map<String, Object?>> map = await db.rawQuery(sql);
       return "TR${map.first['count'].toString().padLeft(3, "0")}";
+    });
+  }
+
+  static Future<void> createTransaction(
+    TerimaProvider terimaProvider,
+    ItemProvider itemProvider,
+  ) async {
+    return Future<void>.delayed(const Duration(seconds: timeDuration),
+        () async {
+      try {
+        final terima = terimaProvider.terima;
+        final daftarItem = itemProvider.items;
+        Database db = await DatabaseHelper.initDB();
+        await db.transaction((transaction) async {
+          int terimaId = await transaction.insert(table, {
+            fieldNomorTerima: terima.nomorTerima,
+            fieldTanggal: terima.tanggal.toIso8601String(),
+            fieldStatus: terima.status,
+            fieldNamaPelanggan: terima.namaPelanggan,
+            fieldTeleponPelanggan: terima.teleponPelanggan,
+            fieldAlamatPelanggan: terima.alamatPelanggan,
+            fieldBerat: terima.berat,
+            fieldHargaPerKg: terima.hargaPerKg,
+            fieldTotal: terima.total,
+            fieldDibayar: terima.dibayar,
+            fieldKembali: terima.kembali,
+            fieldSisa: terima.sisa,
+            fieldStatusPembayaran: terima.statusPembayaran
+          });
+          await ItemRepository.createTransaction(
+            transaction,
+            terimaId,
+            daftarItem,
+          );
+        });
+        itemProvider.clear();
+        terimaProvider.clear();
+      } on Exception catch (e) {
+        throw Exception(e);
+      }
     });
   }
 }
