@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/res/messages.dart';
+import 'package:open_sisfo_laundry/res/spacing.dart';
 import 'package:open_sisfo_laundry/screens/terima_screens/ringkasan_terima_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -51,9 +53,6 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
     return AppBar(
       title: const Text("Pelanggan"),
       centerTitle: true,
-      actions: [
-        actionHeaderBerikutnya(),
-      ],
     );
   }
 
@@ -61,12 +60,7 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
   /// not implemented
 
   /// ACTIONS HEADER
-  Widget actionHeaderBerikutnya() {
-    return TextButton(
-      onPressed: eventBerikutnya,
-      child: Text("Berikutnya"),
-    );
-  }
+  /// not implemented
 
   /// BOTTOM ACTION
   /// not implemented
@@ -81,9 +75,25 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
         key: _formKey,
         child: Column(
           children: [
-            inputNamaPelanggan(),
-            inputTeleponPelanggan(),
-            inputAlamatPelanggan(),
+            spaceAfterHeader(),
+            infoWidgetStep(
+              currentStep: 2,
+              totalStep: 4,
+              message: "Masukkan informasi pelanggan/customer",
+            ),
+            spaceBetweenSection(),
+            spaceSide(child: inputNamaPelanggan()),
+            spaceBetweenButtonOrInput(),
+            spaceSide(child: inputTeleponPelanggan()),
+            spaceBetweenButtonOrInput(),
+            spaceSide(child: inputAlamatPelanggan()),
+            spaceBetweenButtonOrInput(),
+            spaceSide(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: widgetBerikutnya(),
+              ),
+            ),
           ],
         ),
       ),
@@ -96,6 +106,14 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
   /// DETAIL
   /// not implemented
 
+  /// WIDGETS
+  Widget widgetBerikutnya() {
+    return FilledButton(
+      onPressed: eventBerikutnya,
+      child: Text("Berikutnya"),
+    );
+  }
+
   /// INPUTS
   TextFormField inputNamaPelanggan() {
     return TextFormField(
@@ -104,8 +122,6 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: "Nama ",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -129,8 +145,6 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         labelText: "Telepon",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
       ),
       onFieldSubmitted: (value) {
         log("test");
@@ -157,8 +171,6 @@ class _FormPelangganScreenState extends State<FormPelangganScreen> {
       controller: _alamatPelangganController,
       decoration: InputDecoration(
         labelText: "Alamat",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

@@ -6,6 +6,10 @@ import 'package:open_sisfo_laundry/models/harga_model.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
 import 'package:open_sisfo_laundry/repositories/harga_repository.dart';
 import 'package:open_sisfo_laundry/repositories/terima_repository.dart';
+import 'package:open_sisfo_laundry/res/messages.dart';
+import 'package:open_sisfo_laundry/res/misc.dart';
+import 'package:open_sisfo_laundry/res/sizes.dart';
+import 'package:open_sisfo_laundry/res/spacing.dart';
 import 'package:open_sisfo_laundry/screens/terima_screens/form_customer_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -56,16 +60,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
 
   /// HEADER
   AppBar header() {
-    return AppBar(
-      title: Text("Detail Terima"),
-      centerTitle: true,
-      actions: [
-        TextButton(
-          onPressed: _isProcess ? null : eventSimpan,
-          child: Text("Berikutnya"),
-        ),
-      ],
-    );
+    return AppBar(title: Text("Detail Terima"));
   }
 
   /// FUTURE
@@ -76,14 +71,32 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
       child: Form(
         key: _formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Visibility(
               visible: _isProcess,
               child: LinearProgressIndicator(),
             ),
-            inputNomorTerima(),
-            inputTanggal(),
-            inputBerat(),
+            spaceAfterHeader(),
+            infoWidgetStep(
+              currentStep: 1,
+              totalStep: 4,
+              message: "Masukkan Informasi Penerimaan",
+            ),
+            spaceBetweenSection(),
+            spaceSide(child: inputNomorTerima()),
+            spaceBetweenButtonOrInput(),
+            spaceSide(child: inputTanggal()),
+            spaceBetweenButtonOrInput(),
+            spaceSide(child: inputBerat()),
+            spaceBetweenButtonOrInput(),
+            spaceSide(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: widgetBerikutnya(),
+              ),
+            ),
+            spaceEnd(),
           ],
         ),
       ),
@@ -94,6 +107,14 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
 
   /// DETAIL
 
+  /// WIDGETS
+  Widget widgetBerikutnya() {
+    return FilledButton(
+      onPressed: _isProcess ? null : eventSimpan,
+      child: Text("Berikutnya"),
+    );
+  }
+
   /// INPUTS
   Widget inputNomorTerima() {
     return TextFormField(
@@ -102,10 +123,8 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
       controller: _nomorTerimaController,
       decoration: InputDecoration(
         labelText: "Nomor Terima",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
         suffixIcon: IconButton(
-          icon: Icon(Icons.refresh),
+          icon: Icon(Icons.replay_outlined),
           onPressed: eventGenerateNumber,
         ),
       ),
@@ -129,11 +148,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
       maxLength: 16,
       controller: _tanggalController,
       onTap: () => eventSelectedDate(context),
-      decoration: InputDecoration(
-        labelText: "Tanggal Terima",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
-      ),
+      decoration: InputDecoration(labelText: "Tanggal Terima"),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter some text';
@@ -149,11 +164,7 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
       maxLength: 2,
       keyboardType: TextInputType.number,
       controller: _beratController,
-      decoration: InputDecoration(
-        labelText: "Berat Cucian (kg)",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
-      ),
+      decoration: InputDecoration(labelText: "Berat Cucian (kg)"),
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         FilteringTextInputFormatter.digitsOnly,
@@ -171,6 +182,12 @@ class _FormTerimaScreenState extends State<FormTerimaScreen> {
       },
     );
   }
+
+  /// ACTIONS HEADER
+  /// not implemented
+
+  /// BOTTOM ACTION
+  /// not implemented
 
   /// EVENTS
   void eventSimpan() {

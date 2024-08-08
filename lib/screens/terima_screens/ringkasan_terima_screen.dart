@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:open_sisfo_laundry/models/item_model.dart';
 import 'package:open_sisfo_laundry/providers/item_provider.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/res/messages.dart';
+import 'package:open_sisfo_laundry/res/sizes.dart';
+import 'package:open_sisfo_laundry/res/spacing.dart';
 import 'package:open_sisfo_laundry/screens/terima_screens/form_bayar_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -38,9 +41,6 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
     return AppBar(
       title: const Text("Ringkasan"),
       centerTitle: true,
-      actions: [
-        actionHeaderPembayaran(),
-      ],
     );
   }
 
@@ -51,7 +51,20 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
   Widget layout() {
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          spaceAfterHeader(),
+          infoWidgetStep(
+            currentStep: 3,
+            totalStep: 4,
+            message: "Ringkasan penerimaan cucian",
+          ),
+          spaceBetweenSection(),
+          spaceBetweenTitleAndContent(
+            child: spaceSide(
+              child: widgetInfoDasar(),
+            ),
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -59,7 +72,6 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
               Expanded(child: widgetTanggalTerima()),
             ],
           ),
-          Divider(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -67,9 +79,21 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
               Expanded(child: wigdetPelanggan()),
             ],
           ),
-          Divider(),
-          widgetRincianItem(),
-          Expanded(child: collection())
+          spaceBetweenSection(),
+          spaceBetweenTitleAndContent(
+            child: spaceSide(
+              child: widgetRincianItem(),
+            ),
+          ),
+          Expanded(child: collection()),
+          spaceBetweenButtonOrInput(),
+          spaceSide(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: widgetPembayaran(),
+            ),
+          ),
+          spaceEnd(),
         ],
       ),
     );
@@ -97,11 +121,16 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
 
   /// WIDGETS
   Widget widgetRincianItem() {
-    return ListTile(
-      title: Text(
-        "Rincian Item",
-        style: TextStyle(fontWeight: FontWeight.w600),
-      ),
+    return Text(
+      "Rincian Item",
+      style: Theme.of(context).textTheme.titleMedium,
+    );
+  }
+
+  Widget widgetInfoDasar() {
+    return Text(
+      "Info Dasar",
+      style: Theme.of(context).textTheme.titleMedium,
     );
   }
 
@@ -153,11 +182,16 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
           return Text(terimaProvider.terima.tanggal.toString());
         },
       ),
+      contentPadding: EdgeInsets.symmetric(
+        vertical: 0,
+        horizontal: size16,
+      ),
     );
   }
 
   Widget widgetNomorTerima() {
     var terimaProvider = context.watch<TerimaProvider>();
+
     return ListTile(
       title: Text("Nomor Terima"),
       subtitle: Consumer(
@@ -165,6 +199,17 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
           return Text(terimaProvider.terima.nomorTerima);
         },
       ),
+      contentPadding: EdgeInsets.symmetric(
+        vertical: 0,
+        horizontal: size16,
+      ),
+    );
+  }
+
+  Widget widgetPembayaran() {
+    return FilledButton(
+      onPressed: eventFormPembayaranScreen,
+      child: Text("Pembayaran"),
     );
   }
 
@@ -177,12 +222,7 @@ class _RingkasanTerimaScreenState extends State<RingkasanTerimaScreen> {
   /// not implemented
 
   /// ACTIONS HEADER
-  Widget actionHeaderPembayaran() {
-    return TextButton(
-      onPressed: eventFormPembayaranScreen,
-      child: Text("Pembayaran"),
-    );
-  }
+  /// not implemented
 
   /// BOTTOM ACTION
   /// not implemented

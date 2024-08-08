@@ -3,6 +3,9 @@ import 'package:open_sisfo_laundry/helpers/widgets.dart';
 import 'package:open_sisfo_laundry/providers/item_provider.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
 import 'package:open_sisfo_laundry/repositories/terima_repository.dart';
+import 'package:open_sisfo_laundry/res/messages.dart';
+import 'package:open_sisfo_laundry/res/sizes.dart';
+import 'package:open_sisfo_laundry/res/spacing.dart';
 import 'package:open_sisfo_laundry/screens/terima_screens/pilih_item_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -62,25 +65,33 @@ class _ProcessTerimaScreenState extends State<ProcessTerimaScreen> {
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            return problemWidgetException(
+            return errorWidgetCenter(
               context: context,
-              message: snapshot.error.toString(),
+              exception: snapshot.error,
+              label: "Kembali",
+              onPress: eventPilihItemScreen,
             );
           }
-          return layout();
+
+          String message = 'Terima kasih telah melakukan transaksi. '
+              'Pesanan Anda sedang diproses dan akan '
+              'segera dikirim.';
+
+          return successWidgetCenter(
+            context: context,
+            message: message,
+            label: 'Kembali',
+            onPress: eventPilihItemScreen,
+          );
         }
 
-        return widgetLoading();
+        return loadingCenter();
       },
     );
   }
 
   /// LAYOUT
-  Widget layout() {
-    return Center(
-      child: TextButton(onPressed: eventPilihItemScreen, child: Text("Sukses")),
-    );
-  }
+  /// not implemented
 
   /// COLLECTION
   /// not implemented
@@ -89,9 +100,7 @@ class _ProcessTerimaScreenState extends State<ProcessTerimaScreen> {
   /// not implemented
 
   /// WIDGETS
-  Widget widgetLoading() {
-    return Center(child: const CircularProgressIndicator());
-  }
+  /// not implemented
 
   /// INPUTS
   /// not implemented

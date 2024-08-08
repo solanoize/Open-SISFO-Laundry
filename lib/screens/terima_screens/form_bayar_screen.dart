@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:open_sisfo_laundry/providers/terima_provider.dart';
+import 'package:open_sisfo_laundry/res/messages.dart';
+import 'package:open_sisfo_laundry/res/spacing.dart';
 import 'package:open_sisfo_laundry/screens/terima_screens/process_terima_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -60,9 +62,6 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
     return AppBar(
       title: Text("Pembayaran"),
       centerTitle: true,
-      actions: [
-        actionsHeaderSelesai(),
-      ],
     );
   }
 
@@ -75,30 +74,39 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
       child: Form(
         child: Column(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: widgetNomorTerima()),
-                Expanded(child: widgetTotal()),
-              ],
+            spaceAfterHeader(),
+            infoWidgetStep(
+              currentStep: 4,
+              totalStep: 4,
+              message: "Masukkan pembayaran tagihan cuci",
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: widgetHargaPerKg()),
-                Expanded(child: widgetBeratCucian()),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: widgetSisa()),
-                Expanded(child: widgetKembalian()),
-              ],
-            ),
-            inputDibayar(),
+            spaceBetweenSection(),
+            Divider(),
+            widgetNomorTerima(),
+            Divider(),
+            widgetTotal(),
+            Divider(),
+            widgetSisa(),
+            Divider(),
+            widgetKembalian(),
+            Divider(),
             widgetJenisPembayaran(),
-            SizedBox(height: 32),
+            Divider(),
+            spaceBetweenButtonOrInput(),
+            spaceSide(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: inputDibayar(),
+              ),
+            ),
+            spaceBetweenButtonOrInput(),
+            spaceSide(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: widgetSelesai(),
+              ),
+            ),
+            spaceEnd(),
           ],
         ),
       ),
@@ -116,14 +124,9 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetNomorTerima() {
     return ListTile(
       title: Text("Nomor Terima"),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(value.terima.nomorTerima),
-            ],
-          );
+          return Text(value.terima.nomorTerima);
         },
       ),
     );
@@ -132,7 +135,7 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetTotal() {
     return ListTile(
       title: Text("Total"),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
           return Text("Rp. ${value.terima.total}");
         },
@@ -143,14 +146,9 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetHargaPerKg() {
     return ListTile(
       title: Text("Harga Per Kg"),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Rp. ${value.terima.hargaPerKg}/kg"),
-            ],
-          );
+          return Text("Rp. ${value.terima.hargaPerKg}/kg");
         },
       ),
     );
@@ -159,7 +157,7 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetBeratCucian() {
     return ListTile(
       title: Text("Berat Cucian"),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
           return Text("${value.terima.berat} kg");
         },
@@ -170,14 +168,9 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetSisa() {
     return ListTile(
       title: Text("Sisa"),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Rp. ${value.terima.sisa}"),
-            ],
-          );
+          return Text("Rp. ${value.terima.sisa}");
         },
       ),
     );
@@ -186,7 +179,7 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetKembalian() {
     return ListTile(
       title: Text("Kembalian"),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
           return Text("Rp. ${value.terima.total}");
         },
@@ -197,11 +190,18 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   Widget widgetJenisPembayaran() {
     return ListTile(
       title: Text("Jenis Pembayaran "),
-      subtitle: Consumer<TerimaProvider>(
+      trailing: Consumer<TerimaProvider>(
         builder: (context, value, child) {
           return Text(value.terima.statusPembayaran);
         },
       ),
+    );
+  }
+
+  Widget widgetSelesai() {
+    return FilledButton(
+      onPressed: eventSelesai,
+      child: Text("Selesai"),
     );
   }
 
@@ -211,11 +211,7 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
       maxLength: 12,
       keyboardType: TextInputType.number,
       controller: _dibayarController,
-      decoration: InputDecoration(
-        labelText: "Dibayar",
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        alignLabelWithHint: true,
-      ),
+      decoration: InputDecoration(labelText: "Dibayar"),
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         FilteringTextInputFormatter.digitsOnly,
@@ -240,12 +236,7 @@ class _FormBayarScreenState extends State<FormBayarScreen> {
   /// not implemented
 
   /// ACTIONS HEADER
-  Widget actionsHeaderSelesai() {
-    return TextButton(
-      onPressed: eventSelesai,
-      child: Text("Selesai"),
-    );
-  }
+  /// not implemented
 
   /// BOTTOM ACTION
   /// not implemented
